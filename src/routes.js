@@ -215,10 +215,14 @@ router.addHandler(LABELS.PROFILE, async ({ request, $, log, crawler }) => {
         const emails = social.emailsFromText(pageHtml) || [];
         // Filter out Trustpilot's own emails, build identifiers, and invalid domains
         email = emails.find((e) => {
+            if (e.includes('trustpilot.com')) return false;
+            if (e.includes('sentry.io')) return false;
             const domain = e.split('@')[1] || '';
-            return !e.includes('trustpilot.com')
-                && domain.includes('.')
-                && /[a-zA-Z]/.test(domain); // domain must have at least one letter
+            // Domain must have a dot and at least one letter (rejects numeric build IDs)
+            if (!domain.includes('.') || !/[a-zA-Z]/.test(domain)) return false;
+            // Reject domains that look like DSNs/IDs (too many segments or hex)
+            if (/^[0-9a-f]{16,}/.test(e.split('@')[0])) return false;
+            return true;
         }) || '';
     }
 
