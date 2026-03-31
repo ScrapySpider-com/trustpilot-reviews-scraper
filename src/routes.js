@@ -4,6 +4,24 @@ import { LABELS, BASE_URL } from './constants.js';
 
 const router = createCheerioRouter();
 
+/**
+ * Builds star-filter query params string, e.g. "stars=1&stars=2&stars=3"
+ */
+function buildStarParams(maxStarRating) {
+    return Array.from({ length: maxStarRating }, (_, i) => `stars=${i + 1}`).join('&');
+}
+
+/**
+ * Appends star-filter and language params to a profile URL so the profile
+ * handler receives pre-filtered review pages (avoids a wasteful redirect).
+ */
+function appendStarFilter(profileUrl, maxStarRating) {
+    if (profileUrl.includes('stars=')) return profileUrl;
+    const starParams = buildStarParams(maxStarRating);
+    const sep = profileUrl.includes('?') ? '&' : '?';
+    return `${profileUrl}${sep}${starParams}&languages=all`;
+}
+
 // ---------------------------------------------------------------------------
 // DEFAULT / SEARCH handler — processes keyword search result pages
 // ---------------------------------------------------------------------------
@@ -26,10 +44,14 @@ router.addDefaultHandler(async ({ request, $, log, enqueueLinks, crawler }) => {
                 }
                 if (!biz.identifyingName) continue;
 
+                const profileUrl = appendStarFilter(
+                    `${BASE_URL}/review/${biz.identifyingName}`,
+                    config.maxStarRating,
+                );
                 requests.push({
-                    url: `${BASE_URL}/review/${biz.identifyingName}`,
+                    url: profileUrl,
                     label: LABELS.PROFILE,
-                    userData: { source: 'search' },
+                    userData: { source: 'search', starsApplied: true },
                 });
             }
 
@@ -42,13 +64,20 @@ router.addDefaultHandler(async ({ request, $, log, enqueueLinks, crawler }) => {
         log.warning(`Failed to parse __NEXT_DATA__ on ${request.url}: ${err.message}`);
     }
 
-    // --- Fallback: enqueue business-unit-card links (works on category-style pages too) ---
-    const { processedRequests } = await enqueueLinks({
-        selector: 'a[name="business-unit-card"]',
-        label: LABELS.PROFILE,
-        userData: { source: 'search' },
-    });
-    enqueued += processedRequests.length;
+    // --- Fallback: enqueue business-unit-card links ---
+    if (enqueued === 0) {
+        const { processedRequests } = await enqueueLinks({
+            selector: 'a[name="business-unit-card"]',
+            label: LABELS.PROFILE,
+            userData: { source: 'search' },
+            transformRequestFunction: (req) => {
+                req.url = appendStarFilter(req.url, config.maxStarRating);
+                req.userData.starsApplied = true;
+                return req;
+            },
+        });
+        enqueued += processedRequests.length;
+    }
     log.info(`Enqueued ${enqueued} business profiles from search page`);
 
     // --- Pagination ---
@@ -86,9 +115,9 @@ router.addHandler(LABELS.CATEGORY, async ({ request, $, log, enqueueLinks, crawl
 
         const profileUrl = href.startsWith('http') ? href : `${BASE_URL}${href}`;
         requests.push({
-            url: profileUrl,
+            url: appendStarFilter(profileUrl, config.maxStarRating),
             label: LABELS.PROFILE,
-            userData: { category, subCategory, trustScore, reviewCount },
+            userData: { category, subCategory, trustScore, reviewCount, starsApplied: true },
         });
     });
 

@@ -57,7 +57,14 @@ for (const entry of startUrls) {
         url = `${url}${separator}country=${encodeURIComponent(country.toUpperCase())}`;
     }
 
-    requests.push({ url, label });
+    // Pre-apply star filters to profile URLs to avoid a wasteful redirect
+    if (label === LABELS.PROFILE && !url.includes('stars=')) {
+        const starParams = Array.from({ length: maxStarRating }, (_, i) => `stars=${i + 1}`).join('&');
+        const sep = url.includes('?') ? '&' : '?';
+        url = `${url}${sep}${starParams}&languages=all`;
+    }
+
+    requests.push({ url, label, userData: { starsApplied: label === LABELS.PROFILE } });
 }
 
 await Actor.setValue('CONFIG', {
@@ -74,9 +81,20 @@ const proxy = await Actor.createProxyConfiguration(proxyConfiguration);
 const crawler = new CheerioCrawler({
     proxyConfiguration: proxy,
     maxRequestsPerCrawl,
+    maxConcurrency: 5,
     requestHandlerTimeoutSecs: 120,
     navigationTimeoutSecs: 60,
     requestHandler: router,
+    additionalMimeTypes: ['application/json'],
+    preNavigationHooks: [
+        (_ctx, gotOptions) => {
+            gotOptions.headers = {
+                ...gotOptions.headers,
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            };
+        },
+    ],
 });
 
 await crawler.run(requests);
