@@ -1,0 +1,12 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "Trustpilot Negative Reviews Scraper Output",
+    "description": "Negative reviews extracted from Trustpilot business profiles with business details and contact information.",
+    "properties": {
+        "reviews": {
+            "type": "string",
+            "title": "Negative Reviews",
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
+        }
+    }
+}

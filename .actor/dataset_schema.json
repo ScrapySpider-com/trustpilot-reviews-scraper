@@ -1,0 +1,218 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "type": "object",
+        "required": ["businessName", "trustpilotUrl", "reviewerName", "reviewStars"],
+        "properties": {
+            "businessName": {
+                "type": "string",
+                "title": "Business Name",
+                "description": "Company name on Trustpilot",
+                "example": "Acme Insurance Ltd"
+            },
+            "trustpilotUrl": {
+                "type": "string",
+                "title": "Trustpilot URL",
+                "description": "Business profile URL on Trustpilot",
+                "example": "https://www.trustpilot.com/review/acme-insurance.com"
+            },
+            "websiteUrl": {
+                "type": "string",
+                "title": "Website URL",
+                "description": "Company website URL",
+                "example": "https://acme-insurance.com"
+            },
+            "trustScore": {
+                "type": "number",
+                "title": "Trust Score",
+                "description": "Overall TrustScore (0-5)",
+                "example": 2.1
+            },
+            "isVerified": {
+                "type": "boolean",
+                "title": "Is Verified",
+                "description": "Whether the business is verified on Trustpilot",
+                "example": false
+            },
+            "totalReviews": {
+                "type": "integer",
+                "title": "Total Reviews",
+                "description": "Total number of reviews",
+                "example": 342
+            },
+            "oneStarCount": {
+                "type": "integer",
+                "title": "1-Star Count",
+                "description": "Number of 1-star reviews",
+                "example": 89
+            },
+            "twoStarCount": {
+                "type": "integer",
+                "title": "2-Star Count",
+                "description": "Number of 2-star reviews",
+                "example": 45
+            },
+            "threeStarCount": {
+                "type": "integer",
+                "title": "3-Star Count",
+                "description": "Number of 3-star reviews",
+                "example": 38
+            },
+            "fourStarCount": {
+                "type": "integer",
+                "title": "4-Star Count",
+                "description": "Number of 4-star reviews",
+                "example": 67
+            },
+            "fiveStarCount": {
+                "type": "integer",
+                "title": "5-Star Count",
+                "description": "Number of 5-star reviews",
+                "example": 103
+            },
+            "category": {
+                "type": "string",
+                "title": "Category",
+                "description": "Business category",
+                "example": "Insurance"
+            },
+            "email": {
+                "type": "string",
+                "title": "Email",
+                "description": "Contact email extracted from Trustpilot page",
+                "example": "info@acme-insurance.com"
+            },
+            "reviewerName": {
+                "type": "string",
+                "title": "Reviewer Name",
+                "description": "Name of the reviewer",
+                "example": "John D."
+            },
+            "reviewText": {
+                "type": "string",
+                "title": "Review Text",
+                "description": "Full text of the negative review",
+                "example": "Terrible customer service. Waited 3 weeks for a response..."
+            },
+            "reviewUrl": {
+                "type": "string",
+                "title": "Review URL",
+                "description": "Direct link to the review",
+                "example": "https://www.trustpilot.com/reviews/abc123"
+            },
+            "reviewStars": {
+                "type": "integer",
+                "title": "Review Stars",
+                "description": "Star rating of this review (1-5)",
+                "example": 1
+            },
+            "reviewDate": {
+                "type": "string",
+                "title": "Review Date",
+                "description": "Date of the review in ISO format",
+                "example": "2024-03-15T10:30:00.000Z"
+            }
+        }
+    },
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "transformation": {
+                "fields": [
+                    "businessName",
+                    "trustScore",
+                    "reviewerName",
+                    "reviewStars",
+                    "reviewText",
+                    "reviewUrl"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "reviewUrl": {
+                        "format": "link"
+                    },
+                    "trustScore": {
+                        "format": "number"
+                    },
+                    "reviewStars": {
+                        "format": "number"
+                    }
+                }
+            }
+        },
+        "businessDetails": {
+            "title": "Business Details",
+            "transformation": {
+                "fields": [
+                    "businessName",
+                    "websiteUrl",
+                    "trustScore",
+                    "isVerified",
+                    "totalReviews",
+                    "oneStarCount",
+                    "twoStarCount",
+                    "threeStarCount",
+                    "email"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "websiteUrl": {
+                        "format": "link"
+                    },
+                    "isVerified": {
+                        "format": "boolean"
+                    }
+                }
+            }
+        },
+        "fullReviews": {
+            "title": "Full Reviews",
+            "transformation": {
+                "fields": [
+                    "businessName",
+                    "trustpilotUrl",
+                    "websiteUrl",
+                    "trustScore",
+                    "isVerified",
+                    "totalReviews",
+                    "oneStarCount",
+                    "twoStarCount",
+                    "threeStarCount",
+                    "fourStarCount",
+                    "fiveStarCount",
+                    "category",
+                    "email",
+                    "reviewerName",
+                    "reviewText",
+                    "reviewUrl",
+                    "reviewStars",
+                    "reviewDate"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "trustpilotUrl": {
+                        "format": "link"
+                    },
+                    "websiteUrl": {
+                        "format": "link"
+                    },
+                    "reviewUrl": {
+                        "format": "link"
+                    },
+                    "isVerified": {
+                        "format": "boolean"
+                    },
+                    "reviewDate": {
+                        "format": "date"
+                    }
+                }
+            }
+        }
+    }
+}

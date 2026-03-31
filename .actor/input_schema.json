@@ -1,0 +1,132 @@
+{
+    "title": "Trustpilot Negative Reviews Scraper Input",
+    "description": "Search for businesses on Trustpilot by keyword or industry, or provide direct URLs. Extract negative reviews with configurable star rating filter.",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "keyword": {
+            "title": "Search Keyword",
+            "type": "string",
+            "description": "Search term to find businesses on Trustpilot. For example, 'insurance', 'web hosting', or a specific company name.",
+            "editor": "textfield"
+        },
+        "industry": {
+            "title": "Industry Category",
+            "type": "string",
+            "description": "Filter businesses by industry category on Trustpilot.",
+            "editor": "select",
+            "enum": [
+                "beauty_wellbeing",
+                "business_services",
+                "construction_manufacturing",
+                "education_training",
+                "electronics_technology",
+                "events_entertainment",
+                "food_beverages_tobacco",
+                "health_medical",
+                "hobbies_crafts",
+                "home_garden",
+                "home_services",
+                "legal_services_government",
+                "media_publishing",
+                "money_insurance",
+                "pets",
+                "public_local_services",
+                "restaurants_bars",
+                "shopping_fashion",
+                "sports",
+                "travel_vacation",
+                "utilities",
+                "vehicles_transportation"
+            ],
+            "enumTitles": [
+                "Beauty & Wellbeing",
+                "Business Services",
+                "Construction & Manufacturing",
+                "Education & Training",
+                "Electronics & Technology",
+                "Events & Entertainment",
+                "Food, Beverages & Tobacco",
+                "Health & Medical",
+                "Hobbies & Crafts",
+                "Home & Garden",
+                "Home Services",
+                "Legal Services & Government",
+                "Media & Publishing",
+                "Money & Insurance",
+                "Pets",
+                "Public & Local Services",
+                "Restaurants & Bars",
+                "Shopping & Fashion",
+                "Sports",
+                "Travel & Vacation",
+                "Utilities",
+                "Vehicles & Transportation"
+            ]
+        },
+        "startUrls": {
+            "title": "Start URLs",
+            "type": "array",
+            "description": "Direct Trustpilot business profile URLs to scrape. Use this to target specific businesses instead of searching by keyword or industry.",
+            "editor": "requestListSources",
+            "prefill": [
+                {
+                    "url": "https://www.trustpilot.com/review/example.com"
+                }
+            ]
+        },
+        "country": {
+            "title": "Country Filter",
+            "type": "string",
+            "description": "Filter businesses by country using an ISO country code (e.g., US, GB, DE, FR, AU).",
+            "editor": "textfield"
+        },
+        "maxStarRating": {
+            "title": "Maximum Star Rating",
+            "type": "integer",
+            "description": "Reviews with this star rating or lower will be extracted as negative reviews. For example, set to 3 to capture 1-star, 2-star, and 3-star reviews.",
+            "default": 3,
+            "minimum": 1,
+            "maximum": 5
+        },
+        "minTrustScore": {
+            "title": "Minimum Trust Score",
+            "type": "number",
+            "description": "Only scrape businesses with a TrustScore at or above this value. Set to 0 to disable this filter and scrape all businesses regardless of their score.",
+            "default": 0,
+            "minimum": 0,
+            "maximum": 5
+        },
+        "minReviewCount": {
+            "title": "Minimum Review Count",
+            "type": "integer",
+            "description": "Only scrape businesses that have at least this many total reviews. Set to 0 to disable this filter.",
+            "default": 0,
+            "minimum": 0
+        },
+        "maxReviewsPerBusiness": {
+            "title": "Max Reviews Per Business",
+            "type": "integer",
+            "description": "Maximum number of negative reviews to collect per business. Useful for limiting output size when scraping many businesses.",
+            "default": 5,
+            "minimum": 1,
+            "maximum": 100
+        },
+        "maxRequestsPerCrawl": {
+            "title": "Max Requests Per Crawl",
+            "type": "integer",
+            "description": "Maximum number of HTTP requests the crawler will make. This acts as a safety limit to prevent excessive usage.",
+            "default": 1000,
+            "minimum": 1,
+            "sectionCaption": "Advanced Settings"
+        },
+        "proxyConfiguration": {
+            "title": "Proxy Configuration",
+            "type": "object",
+            "description": "Proxy settings for the scraper. Trustpilot may block requests without proxies.",
+            "editor": "proxy",
+            "sectionCaption": "Proxy Configuration"
+        }
+    },
+    "required": []
+}

@@ -1,0 +1,17 @@
+{
+  "name": "trustpilot-reviews-scraper",
+  "version": "1.0.0",
+  "description": "Scrape negative reviews from Trustpilot businesses by keyword, industry, or direct URL.",
+  "type": "module",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "node src/main.js",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "author": "ScrapySpider",
+  "license": "ISC",
+  "dependencies": {
+    "apify": "^3.2.6",
+    "crawlee": "^3.11.5"
+  }
+}

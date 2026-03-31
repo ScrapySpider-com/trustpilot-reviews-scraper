@@ -1,0 +1,6 @@
+# This file tells Docker which files in the project should not
+# be copied into the image during the build process.
+node_modules
+storage
+.git
+.DS_Store

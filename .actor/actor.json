@@ -1,0 +1,17 @@
+{
+    "actorSpecification": 1,
+    "name": "trustpilot-reviews-scraper",
+    "title": "Trustpilot Negative Reviews Scraper",
+    "version": "1.0",
+    "buildTag": "latest",
+    "defaultMemoryMbytes": 1024,
+    "minMemoryMbytes": 256,
+    "maxMemoryMbytes": 4096,
+    "dockerfile": "./Dockerfile",
+    "readme": "../README.md",
+    "input": "./input_schema.json",
+    "storages": {
+        "dataset": "./dataset_schema.json"
+    },
+    "output": "./output_schema.json"
+}
