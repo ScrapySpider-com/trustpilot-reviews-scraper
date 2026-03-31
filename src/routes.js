@@ -213,8 +213,13 @@ router.addHandler(LABELS.PROFILE, async ({ request, $, log, crawler }) => {
     if (!email) {
         const pageHtml = $.html() || '';
         const emails = social.emailsFromText(pageHtml) || [];
-        // Filter out Trustpilot's own emails and internal build identifiers
-        email = emails.find((e) => !e.includes('trustpilot.com') && e.includes('.') && e.split('@')[1]?.includes('.')) || '';
+        // Filter out Trustpilot's own emails, build identifiers, and invalid domains
+        email = emails.find((e) => {
+            const domain = e.split('@')[1] || '';
+            return !e.includes('trustpilot.com')
+                && domain.includes('.')
+                && /[a-zA-Z]/.test(domain); // domain must have at least one letter
+        }) || '';
     }
 
     log.info(`Scraping profile: ${businessName} | Trust: ${trustScore} | Reviews: ${totalReviews}`);
